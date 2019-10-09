@@ -171,6 +171,31 @@ class ObservableBleScanResult private constructor(private val timeoutInMs: Long,
 		}
 	}
 
+	/**
+	 * An [ObservableData] that supplies a list of ScanResult and average RSSI.
+	 *
+	 * To get an instance of it use the [Builder]
+	 *
+	 *      ObservableBleScanResult
+	 *          // scanner to supply ScanResult data
+	 *          .builder(bleScanner)
+	 *          // after how long without seeing a device, it should be removed from the list
+	 *          .timeoutInMs(FIVE_SECONDS)
+	 *          // when become active, drop any device not seen for this amount of time
+	 *          .onActiveTimeoutInMs(TEN_SECONDS)
+	 *          // avoid sending new data too frequently
+	 *          .debounceInMs(ONE_SECONDS)
+	 *          // cancels connection to the bleScanner
+	 *          .cancellation(cancellation)
+	 *          // filters only specific devices
+	 *          .filters(listOf(ScanFilter.Builder().setDeviceName("my_device").build()))
+	 *          // handler to execute delayed the removal of timed-out devices. (ideally the same used to instantiate the BleScanner)
+	 *          .handler(handler)
+	 *          // factory for an averaging algorithm
+	 *          .averagerFactory { MotionlessAverage.Builder.createConstantFilterAverage(3f) }
+	 *          .build()
+	 *
+	 */
 	companion object {
 
 		private inline fun <T> MutableMap<String, T>.filterInPlace(filter: (T) -> Boolean): Int {

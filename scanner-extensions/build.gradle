@@ -31,8 +31,8 @@ androidExtensions {
 dependencies {
 	implementation(Libs.kotlin_stdlib_jdk7)
 	api project(':core-scanner')
+	api(Libs.motionlessaverage)
 	implementation(Libs.lifecycle_livedata)
-	implementation(Libs.motionlessaverage)
 	implementation(Libs.time)
 
 	testImplementation(Libs.junit_junit)

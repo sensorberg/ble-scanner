@@ -104,6 +104,16 @@ object Libs {
             Versions.observable_data
 
     /**
+     * https://developer.android.com/topic/libraries/architecture/index.html
+     */
+    const val room_compiler: String = "androidx.room:room-compiler:" + Versions.androidx_room
+
+    /**
+     * https://developer.android.com/topic/libraries/architecture/index.html
+     */
+    const val room_runtime: String = "androidx.room:room-runtime:" + Versions.androidx_room
+
+    /**
      * https://developer.android.com/testing
      */
     const val espresso_core: String = "androidx.test.espresso:espresso-core:" +

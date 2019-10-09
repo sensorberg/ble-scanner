@@ -32,6 +32,8 @@ object Versions {
 
     const val observable_data: String = "1.3.4"
 
+    const val androidx_room: String = "2.1.0"
+
     const val espresso_core: String = "3.2.0"
 
     const val recyclerview: String = "1.0.0"

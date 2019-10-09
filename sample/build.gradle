@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
 	compileSdkVersion SdkVersion.compile
@@ -22,15 +23,19 @@ android {
 
 dependencies {
 	implementation(Libs.kotlin_stdlib_jdk7)
-	implementation project(':lifecycle-bleScanner')
-	implementation project(':bleScanner-extensions')
+	implementation project(':lifecycle-scanner')
+	implementation project(':scanner-extensions')
 
+	implementation(Libs.lifecycle_extensions)
 	implementation(Libs.appcompat)
 	implementation(Libs.core_ktx)
 	implementation(Libs.constraintlayout)
 	implementation(Libs.recyclerview)
 	implementation(Libs.material)
 	implementation(Libs.permission_bitte)
+
+	implementation(Libs.room_runtime)
+	kapt(Libs.room_compiler)
 
 	testImplementation(Libs.junit_junit)
 	androidTestImplementation(Libs.androidx_test_ext_junit)
