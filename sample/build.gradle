@@ -1,0 +1,38 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+	compileSdkVersion SdkVersion.compile
+	defaultConfig {
+		applicationId "com.sensorberg.libs.ble_scanner.sample"
+		minSdkVersion SdkVersion.min
+		targetSdkVersion SdkVersion.target
+		versionCode 1
+		versionName "1.0"
+		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+	}
+	buildTypes {
+		release {
+			minifyEnabled false
+			proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+		}
+	}
+}
+
+dependencies {
+	implementation(Libs.kotlin_stdlib_jdk7)
+	implementation project(':lifecycle-scanner')
+	implementation project(':scanner-extensions')
+
+	implementation(Libs.appcompat)
+	implementation(Libs.core_ktx)
+	implementation(Libs.constraintlayout)
+	implementation(Libs.recyclerview)
+	implementation(Libs.material)
+	implementation(Libs.permission_bitte)
+
+	testImplementation(Libs.junit_junit)
+	androidTestImplementation(Libs.androidx_test_ext_junit)
+	androidTestImplementation(Libs.espresso_core)
+}

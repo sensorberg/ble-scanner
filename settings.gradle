@@ -1,0 +1,2 @@
+include ':sample', ':core-scanner', ':lifecycle-scanner', ':scanner-extensions'
+rootProject.name='BleScanner'
