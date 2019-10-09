@@ -17,7 +17,6 @@ internal class BleScannerStateController(
 
 	private var currentState: BleScanner.State = BleScanner.State.IDLE(BleScanner.Reason.NO_SCAN_REQUEST)
 	private var onStateChangedListener: ((BleScanner.State) -> Unit)? = null
-	private var needsReStart = false
 
 	internal fun update(bluetoothEnabled: Boolean,
 						locationEnabled: Boolean,
@@ -50,38 +49,20 @@ internal class BleScannerStateController(
 		Timber.d(
 				"$TAG update: bluetoothEnabled=$bluetoothEnabled, locationEnabled=$locationEnabled, locationPermission=$locationPermission, bluetoothError=$bluetoothError, scanRequest=$scanRequest")
 
-		// if scanning, but bluetooth is now off, needs calling restart
-		if (delayedScanner.isStarted() && bluetoothEnabled == false) {
-			Timber.d("$TAG. Bluetooth turned off while scanning, needs restart next time")
-			needsReStart = true
-		}
-
-		// can only do anything if bluetooth is enabled
-		if (bluetoothEnabled == true) {
-
-			// if client request to stop now scanning, this is executed immediately
-			if (scanRequest == ScanRequest.STOP_NOW) {
-				delayedScanner.stop(0)
-			}
-
-			// if can scan, let's scan
-			else if (scanRequest == ScanRequest.SCAN && locationPermission == true) {
-
-				// re-starting if needed
-				if (needsReStart || (bluetoothError != NO_ERROR)) {
-					needsReStart = false
-					scanReStart()
+		when (scanRequest) {
+			ScanRequest.STOP_DELAYED -> stopScan()
+			ScanRequest.STOP_NOW -> stopNowScan()
+			ScanRequest.SCAN -> {
+				if (bluetoothEnabled == true && locationPermission == true) {
+					if (bluetoothError != NO_ERROR) {
+						reStartScan()
+					} else {
+						startScan()
+					}
 				} else {
-					scanStart()
+					stopNowScan()
 				}
 			}
-
-			// can't scan, so stop
-			else {
-				scanStop()
-			}
-		} else {
-			delayedScanner.stop(0)
 		}
 
 		// here's the actual result I'm telling the application
@@ -124,7 +105,7 @@ internal class BleScannerStateController(
 		return didNotChange
 	}
 
-	private fun scanStart() {
+	private fun startScan() {
 		val limit = scanLimits?.getStartDelay()
 		val delay = if (limit != null && limit.startsLeft <= 0) {
 			limit.increaseIn
@@ -134,7 +115,7 @@ internal class BleScannerStateController(
 		delayedScanner.start(delay)
 	}
 
-	private fun scanStop() {
+	private fun stopScan() {
 		val limit = scanLimits?.getStartDelay()
 		val delay = if (limit == null) {
 			0
@@ -148,12 +129,16 @@ internal class BleScannerStateController(
 		delayedScanner.stop(delay)
 	}
 
-	private fun scanReStart() {
+	private fun stopNowScan() {
+		delayedScanner.stop(0)
+	}
+
+	private fun reStartScan() {
 		// re-start is called due to bluetooth being turned off and on again
 		// in that case we will directly stop
 		delayedScanner.stop(0)
 		// and then call start with any delay that was possibly calculated
-		scanStart()
+		startScan()
 	}
 
 	enum class ScanRequest {

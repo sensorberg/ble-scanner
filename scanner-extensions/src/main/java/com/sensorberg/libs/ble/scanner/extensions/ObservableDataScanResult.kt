@@ -10,6 +10,7 @@ import com.sensorberg.libs.time.Time
 import com.sensorberg.motionlessaverage.MotionlessAverage
 import com.sensorberg.observable.Cancellation
 import com.sensorberg.observable.ObservableData
+import com.sensorberg.observable.Observer
 import no.nordicsemi.android.support.v18.scanner.ScanResult
 import timber.log.Timber
 
@@ -70,6 +71,10 @@ class ObservableDataScanResult private constructor(private val timeoutInMs: Long
 		synchronized(devices) {
 			return devices.filterInPlace { isTimedOut(it.bleScanResult.scanResult, now, timeoutInMs) } > 0
 		}
+	}
+
+	private val onBleScannerStatus: Observer<BleScanner.State> = {
+
 	}
 
 	private val onScanResults = object : ScanResultCallback {
@@ -178,7 +183,12 @@ class ObservableDataScanResult private constructor(private val timeoutInMs: Long
 		fun build(): ObservableData<List<BleScanResult>> {
 			val result = ObservableDataScanResult(timeoutInMs, onActiveTimeoutInMs, debounceInMs, averagerFactory, lazyHandler())
 			bleScanner.addCallback(result.onScanResults)
-			cancellation?.onCancelled { bleScanner.removeCallback(result.onScanResults) }
+			val state = bleScanner.getState()
+			state.observe(result.onBleScannerStatus)
+			cancellation?.onCancelled {
+				bleScanner.removeCallback(result.onScanResults)
+				state.removeObserver(result.onBleScannerStatus)
+			}
 			return result
 		}
 
