@@ -22,8 +22,8 @@ android {
 
 dependencies {
 	implementation(Libs.kotlin_stdlib_jdk7)
-	implementation project(':lifecycle-scanner')
-	implementation project(':scanner-extensions')
+	implementation project(':lifecycle-bleScanner')
+	implementation project(':bleScanner-extensions')
 
 	implementation(Libs.appcompat)
 	implementation(Libs.core_ktx)

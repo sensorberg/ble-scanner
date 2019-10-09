@@ -5,15 +5,15 @@ import com.sensorberg.libs.ble.scanner.BleScanner
 import com.sensorberg.libs.ble.scanner.lifecycle.scanWithProcessLifecycle
 import timber.log.Timber
 
-lateinit var scanner: BleScanner
+lateinit var bleScanner: BleScanner
 
 class App : Application() {
 
 	override fun onCreate() {
 		super.onCreate()
 		Timber.plant(Timber.DebugTree())
-		scanner = BleScanner.builder(this)
+		bleScanner = BleScanner.builder(this)
 				.build()
-		scanner.scanWithProcessLifecycle()
+		bleScanner.scanWithProcessLifecycle()
 	}
 }

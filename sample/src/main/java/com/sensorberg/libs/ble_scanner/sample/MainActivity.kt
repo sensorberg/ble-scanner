@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.sensorberg.libs.ble.scanner.extensions.ObservableDataScanResult
+import com.sensorberg.libs.ble.scanner.extensions.ObservableBleScanResult
 import com.sensorberg.observable.Cancellation
 import com.sensorberg.observable.Transformations
 import com.sensorberg.permissionbitte.PermissionBitte
@@ -34,14 +34,6 @@ class MainActivity : AppCompatActivity() {
 		recycler.layoutManager = LinearLayoutManager(this)
 		recycler.adapter = adapter
 
-		cancel = Cancellation()
-		val data = ObservableDataScanResult.builder(scanner)
-				.cancellation(cancel)
-				.build()
-		val stringData = Transformations.map(data) {
-			it?.map { "${it.scanResult.device.name}/${it.scanResult.device.address} :: ${it.averageRssi}dB" }
-		}
-
 		var state = ""
 		var count = 0
 
@@ -50,14 +42,24 @@ class MainActivity : AppCompatActivity() {
 			toolbar.subtitle = "Found $count devices"
 		}
 
-		scanner.getState()
+		bleScanner.getState()
 				.toLiveData()
 				.observe(this, Observer {
 					state = it?.toString() ?: ""
 					updateToolbar()
 				})
-		stringData
-				.toLiveData()
+
+		cancel = Cancellation()
+		val observableBleScans = ObservableBleScanResult.builder(bleScanner)
+				.cancellation(cancel)
+				.build()
+		val data = Transformations.map(observableBleScans) {
+			it?.map {
+				Data("${it.scanResult.device.name}/${it.scanResult.device.address} :: ${it.averageRssi}dB", it.scanResult.device.address)
+			}
+		}
+
+		data.toLiveData()
 				.observe(this, Observer {
 					count = it?.size ?: 0
 					updateToolbar()
@@ -70,27 +72,29 @@ class MainActivity : AppCompatActivity() {
 		super.onDestroy()
 	}
 
-	class Adapter : ListAdapter<String, Holder>(diff) {
+	class Data(val text: String, val id: String)
+
+	class Adapter : ListAdapter<Data, Holder>(diff) {
 		override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
 			val pad = (parent.context.resources.displayMetrics.density * 16).toInt()
 			return Holder(TextView(parent.context).apply { setPadding(pad, pad, pad, pad) })
 		}
 
 		override fun onBindViewHolder(holder: Holder, position: Int) {
-			(holder.itemView as TextView).text = getItem(position)
+			(holder.itemView as TextView).text = getItem(position).text
 		}
 	}
 
 	class Holder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
 	companion object {
-		val diff = object : DiffUtil.ItemCallback<String>() {
-			override fun areItemsTheSame(oldItem: String, newItem: String): Boolean {
-				return oldItem == newItem
+		val diff = object : DiffUtil.ItemCallback<Data>() {
+			override fun areItemsTheSame(oldItem: Data, newItem: Data): Boolean {
+				return oldItem.id == newItem.id
 			}
 
-			override fun areContentsTheSame(oldItem: String, newItem: String): Boolean {
-				return oldItem == newItem
+			override fun areContentsTheSame(oldItem: Data, newItem: Data): Boolean {
+				return oldItem.id == newItem.id && oldItem.text == newItem.text
 			}
 		}
 	}
