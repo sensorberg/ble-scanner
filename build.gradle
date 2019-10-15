@@ -12,12 +12,8 @@ buildscript {
 		classpath(Libs.com_android_tools_build_gradle)
 		classpath(Libs.kotlin_gradle_plugin)
 		classpath(Libs.de_fayard_buildsrcversions_gradle_plugin)
-		classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+		classpath(Libs.kotlin_gradle_plugin)
 	}
-
-    
-    
-    
 
 
 }
