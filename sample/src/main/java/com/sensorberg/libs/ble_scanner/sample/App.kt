@@ -5,6 +5,7 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.os.ParcelUuid
 import androidx.room.Room
+import com.jakewharton.threetenabp.AndroidThreeTen
 import com.sensorberg.libs.ble.scanner.BleScanner
 import com.sensorberg.libs.ble.scanner.lifecycle.scanWithProcessLifecycle
 import com.sensorberg.libs.ble_scanner.sample.database.ScanDatabase
@@ -27,6 +28,7 @@ val backgroundHandler by lazy { Handler(backgroundThread.looper) }
 class App : Application() {
 	override fun onCreate() {
 		super.onCreate()
+		AndroidThreeTen.init(this)
 		Timber.plant(Timber.DebugTree())
 		scanDatabase = Room
 				.databaseBuilder(this, ScanDatabase::class.java, "scan-database")

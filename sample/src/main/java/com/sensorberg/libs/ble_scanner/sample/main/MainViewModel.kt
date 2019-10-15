@@ -36,10 +36,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 				.averagerFactory(averagerFactory)
 				.build()
 
-		val transformedScans = Transformations.map(observableBleScans) {
-			it?.map {
+		val transformedScans = Transformations.map(observableBleScans) { list ->
+			list?.map {
 				ScanData(
-						"${it.scanResult.device.name}/${it.scanResult.device.address} :: ${it.averageRssi}dB", it.scanResult.device.address)
+						text = "${it.scanResult.device.name}/${it.scanResult.device.address} :: ${it.averageRssi}dB",
+						id = it.scanResult.device.address,
+						address = it.scanResult.device.address)
 			}
 		}
 		data = transformedScans.toLiveData()
@@ -55,7 +57,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 		cancellation.cancel()
 	}
 
-	class ScanData(val text: String, val id: String)
+	class ScanData(val text: String, val id: String, val address: String)
 
 	companion object {
 		val SCAN_DATA_DIFF = object : DiffUtil.ItemCallback<ScanData>() {

@@ -21,6 +21,10 @@ android {
 	}
 }
 
+repositories {
+	maven { url 'https://jitpack.io' }
+}
+
 dependencies {
 	implementation(Libs.kotlin_stdlib_jdk7)
 	implementation project(':lifecycle-scanner')
@@ -33,6 +37,9 @@ dependencies {
 	implementation(Libs.recyclerview)
 	implementation(Libs.material)
 	implementation(Libs.permission_bitte)
+	implementation(Libs.executioner)
+	implementation(Libs.threetenabp)
+	implementation(Libs.sparklinelayout)
 
 	implementation(Libs.room_runtime)
 	kapt(Libs.room_compiler)

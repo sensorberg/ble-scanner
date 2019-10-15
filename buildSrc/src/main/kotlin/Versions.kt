@@ -32,15 +32,21 @@ object Versions {
 
     const val observable_data: String = "1.3.4"
 
+    const val sparklinelayout: String = "1.0.1"
+
     const val androidx_room: String = "2.1.0"
 
     const val espresso_core: String = "3.2.0"
 
     const val recyclerview: String = "1.0.0"
 
+    const val executioner: String = "1.0.0"
+
     const val junit_junit: String = "4.12"
 
     const val lint_gradle: String = "26.5.1"
+
+    const val threetenabp: String = "1.2.1"
 
     const val appcompat: String = "1.1.0"
 

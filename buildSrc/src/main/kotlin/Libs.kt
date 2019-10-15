@@ -104,6 +104,12 @@ object Libs {
             Versions.observable_data
 
     /**
+     * https://github.com/majorkik/SparkLineLayout
+     */
+    const val sparklinelayout: String = "com.github.majorkik:SparkLineLayout:" +
+            Versions.sparklinelayout
+
+    /**
      * https://developer.android.com/topic/libraries/architecture/index.html
      */
     const val room_compiler: String = "androidx.room:room-compiler:" + Versions.androidx_room
@@ -125,6 +131,11 @@ object Libs {
     const val recyclerview: String = "androidx.recyclerview:recyclerview:" + Versions.recyclerview
 
     /**
+     * https://git.sensorberg.io/android/executioner
+     */
+    const val executioner: String = "com.sensorberg.libs:executioner:" + Versions.executioner
+
+    /**
      * http://junit.org
      */
     const val junit_junit: String = "junit:junit:" + Versions.junit_junit
@@ -133,6 +144,12 @@ object Libs {
      * https://developer.android.com/studio
      */
     const val lint_gradle: String = "com.android.tools.lint:lint-gradle:" + Versions.lint_gradle
+
+    /**
+     * https://github.com/JakeWharton/ThreeTenABP/
+     */
+    const val threetenabp: String = "com.jakewharton.threetenabp:threetenabp:" +
+            Versions.threetenabp
 
     /**
      * https://developer.android.com/jetpack/androidx

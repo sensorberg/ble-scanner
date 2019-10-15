@@ -16,7 +16,7 @@
 			android:layout_height="wrap_content"
 			app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
 			app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-			tools:title="BleScanner" />
+			app:title="Recording..." />
 	</com.google.android.material.appbar.AppBarLayout>
 
 	<androidx.recyclerview.widget.RecyclerView

@@ -3,12 +3,16 @@ package com.sensorberg.libs.ble_scanner.sample.recorder
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.sensorberg.libs.ble_scanner.sample.R
 
@@ -22,17 +26,14 @@ class RecorderActivity : AppCompatActivity() {
 		address = intent.getStringExtra("address")!!
 
 		setContentView(R.layout.activity_recorder)
-		val toolbar: Toolbar = findViewById(R.id.toolbar)
 		val recycler: RecyclerView = findViewById(R.id.recycler)
+		val adapter = Adapter()
 		recycler.layoutManager = LinearLayoutManager(this)
-
-		toolbar.title = address
+		recycler.adapter = adapter
 
 		val model = ViewModelProviders.of(this)
 				.get(RecorderViewModel::class.java)
-
-		// TODO setup adapter and observe on data
-
+		model.data.observe(this, Observer { adapter.submitList(it) })
 		showStartRecordDialog()
 	}
 
@@ -64,6 +65,20 @@ class RecorderActivity : AppCompatActivity() {
 				.setCancelable(true)
 				.show()
 	}
+
+	class Adapter : ListAdapter<RecorderViewModel.UiData, Holder>(
+			RecorderViewModel.SCAN_DATA_DIFF) {
+		override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
+			val pad = (parent.context.resources.displayMetrics.density * 16).toInt()
+			return Holder(TextView(parent.context).apply { setPadding(pad, pad, pad, pad) })
+		}
+
+		override fun onBindViewHolder(holder: Holder, position: Int) {
+			(holder.itemView as TextView).text = getItem(position).text
+		}
+	}
+
+	class Holder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
 	companion object {
 		fun start(context: Context, address: String) {

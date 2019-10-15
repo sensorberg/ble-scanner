@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.sensorberg.libs.ble_scanner.sample.R
+import com.sensorberg.libs.ble_scanner.sample.recorder.RecorderActivity
 import com.sensorberg.permissionbitte.PermissionBitte
 
 class MainActivity : AppCompatActivity() {
@@ -67,14 +68,19 @@ class MainActivity : AppCompatActivity() {
 		}
 
 		override fun onBindViewHolder(holder: Holder, position: Int) {
-			(holder.itemView as TextView).text = getItem(position).text
+			val item = getItem(position)
+			(holder.itemView as TextView).text = item.text
+			holder.address = item.address
 		}
 	}
 
 	class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+		lateinit var address: String
+
 		init {
 			itemView.setOnClickListener {
-
+				RecorderActivity.start(it.context, address)
 			}
 		}
 	}
