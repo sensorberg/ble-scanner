@@ -19,6 +19,7 @@ import com.sensorberg.libs.ble_scanner.sample.scanDatabase
 import com.sensorberg.motionlessaverage.MotionlessAverage
 import no.nordicsemi.android.support.v18.scanner.ScanResult
 import timber.log.Timber
+import java.util.concurrent.atomic.AtomicLong
 
 class RecorderViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -66,26 +67,32 @@ class RecorderViewModel(application: Application) : AndroidViewModel(application
 	}
 
 	private val scanResultCallback = object : ScanResultCallback {
+
+		private val initialTimeStamp = AtomicLong(Long.MIN_VALUE)
+
 		override fun onScanResult(scanResult: ScanResult) {
 			val batchId = this@RecorderViewModel.batchId.value
-			if (batchId == null) {
-				return
-			}
+			batchId ?: return
+
 			if (scanResult.device.address != address) {
 				return
 			}
 			averageRssi = averager.average(scanResult.rssi.toFloat())
+
+			val timestamp = toMillis(scanResult.timestampNanos)
+			initialTimeStamp.compareAndSet(Long.MIN_VALUE, timestamp)
+
 			runOn(POOL) {
 				Timber.v("Adding scan data to ${scanResult.rssi}")
-				dao.newScan(StoredScanData(scanResult.timestampNanos, batchId, scanResult.rssi))
+				dao.newScan(StoredScanData(timestamp - initialTimeStamp.get(), batchId, scanResult.rssi))
 			}
 		}
 	}
 
 	class UiData(val text: String, val id: Long)
 
-	private fun nanoToEpochMillis(nanos: Long): Long {
-		return System.currentTimeMillis() - SystemClock.elapsedRealtime() + nanos / 1_000_000L
+	private fun toMillis(nanos: Long): Long {
+		return nanos / 1_000_000L
 	}
 
 	companion object {

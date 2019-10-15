@@ -16,7 +16,7 @@ import com.sensorberg.motionlessaverage.MotionlessAverage
 import timber.log.Timber
 import kotlin.random.Random
 
-private const val USE_TEST_DATA = true
+private const val USE_TEST_DATA = false
 
 class RecordsAnalyserViewModel(application: Application) : AndroidViewModel(application) {
 

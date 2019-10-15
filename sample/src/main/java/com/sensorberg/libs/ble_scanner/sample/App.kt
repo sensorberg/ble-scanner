@@ -36,7 +36,7 @@ class App : Application() {
 		bleScanner = BleScanner
 				.builder(this)
 				.handler(backgroundHandler)
-				.filters(listOf(FILTER_SENSORBERG_GATEWAY))
+				//.filters(listOf(FILTER_SENSORBERG_GATEWAY))
 				.build()
 		bleScanner.scanWithProcessLifecycle()
 	}

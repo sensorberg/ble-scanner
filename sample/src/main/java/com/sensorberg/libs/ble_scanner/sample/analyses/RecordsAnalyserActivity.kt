@@ -24,7 +24,6 @@ import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
-import com.majorik.sparklinelibrary.SparkLineLayout
 import com.sensorberg.libs.ble_scanner.sample.R
 import kotlinx.android.synthetic.main.activity_analyser.*
 
