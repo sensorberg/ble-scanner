@@ -8,15 +8,22 @@
 		android:id="@+id/kalmanRtext"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_gravity="center_horizontal" />
+		android:layout_gravity="center_horizontal"
+		android:textAllCaps="true"
+		android:textColor="#000"
+		android:textStyle="bold" />
 
 	<SeekBar
 		android:id="@+id/kalmanR"
 		android:layout_width="match_parent"
 		android:layout_height="42dp" />
+
 	<TextView
 		android:id="@+id/kalmanQtext"
 		android:layout_width="wrap_content"
+		android:textAllCaps="true"
+		android:textColor="#000"
+		android:textStyle="bold"
 		android:layout_height="wrap_content"
 		android:layout_gravity="center_horizontal" />
 

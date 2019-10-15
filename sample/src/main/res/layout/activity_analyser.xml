@@ -22,10 +22,16 @@
 		android:layout_width="match_parent"
 		android:layout_height="match_parent">
 
+		<com.github.mikephil.charting.charts.LineChart
+			android:id="@+id/chart"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent" />
+
 		<com.majorik.sparklinelibrary.SparkLineLayout
 			android:id="@+id/graphOriginal"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
+			android:visibility="gone"
 			app:s_line_bezier="0.5"
 			app:s_line_color="#ff0000"
 			app:s_line_thickness="1dp"
@@ -36,6 +42,7 @@
 			android:id="@+id/graphConstantFilter"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
+			android:visibility="gone"
 			app:s_line_bezier="0.5"
 			app:s_line_color="#00ff00"
 			app:s_line_thickness="1dp"
@@ -46,6 +53,7 @@
 			android:id="@+id/graphKalman"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
+			android:visibility="gone"
 			app:s_line_bezier="0.5"
 			app:s_line_color="#0000ff"
 			app:s_line_thickness="1dp"

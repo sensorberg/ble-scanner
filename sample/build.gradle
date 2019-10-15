@@ -39,7 +39,7 @@ dependencies {
 	implementation(Libs.permission_bitte)
 	implementation(Libs.executioner)
 	implementation(Libs.threetenabp)
-	implementation(Libs.sparklinelayout)
+	implementation(Libs.mpandroidchart)
 
 	implementation(Libs.room_runtime)
 	kapt(Libs.room_compiler)

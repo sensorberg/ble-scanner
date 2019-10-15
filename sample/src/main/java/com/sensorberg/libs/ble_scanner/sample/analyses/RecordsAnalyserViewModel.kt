@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.DiffUtil
+import com.github.mikephil.charting.data.Entry
 import com.sensorberg.executioner.Executioner.SINGLE
 import com.sensorberg.executioner.Executioner.runOn
 import com.sensorberg.libs.ble_scanner.sample.database.ScanDao
@@ -21,9 +22,9 @@ class RecordsAnalyserViewModel(application: Application) : AndroidViewModel(appl
 
 	private val dao: ScanDao = scanDatabase.scanDao()
 
-	val original: LiveData<List<Int>>
-	val constFilter: LiveData<List<Int>>
-	val kalman: LiveData<List<Int>>
+	val original: LiveData<List<Entry>>
+	val constFilter: LiveData<List<Entry>>
+	val kalman: LiveData<List<Entry>>
 
 	private val constFilterParam = MutableLiveData<Float>().apply { value = 1f }
 	private val kalmanFilterParam = MutableLiveData<KalmanParam>().apply { value = KalmanParam(0.05f, 1f) }
@@ -42,32 +43,25 @@ class RecordsAnalyserViewModel(application: Application) : AndroidViewModel(appl
 		}
 
 		if (USE_TEST_DATA) {
-			var lastRssi = Random.nextInt(-100, -10)
 			original = MutableLiveData()
-			val testData = mutableListOf<Int>()
-			repeat(100) {
-				lastRssi += Random.nextInt(-10, 10)
-				testData.add(lastRssi)
-			}
-			(original as MutableLiveData).value = testData
+			refreshTestData()
 		} else {
 			val scans: LiveData<List<StoredScanData>> = Transformations.switchMap(selected) {
 				it?.let { dao.getScans(it.id) }
 			}
 			original = Transformations.map(scans) {
-				it?.map { it.rssi }
+				it?.map { Entry(it.timestamp.toFloat(), it.rssi.toFloat()) }
 			}
 		}
 
 		constFilter = Transformations.switchMap(constFilterParam) { filter ->
 			Timber.d("New constant filter value $filter")
-			val returnListData: LiveData<List<Int>> = Transformations.map(original) { nullableList ->
+			val returnListData: LiveData<List<Entry>> = Transformations.map(original) { nullableList ->
 				nullableList?.let { list ->
 					val avg = MotionlessAverage.Builder.createConstantFilterAverage(filter ?: 1f)
-					list.map { rssi ->
-						val value = avg.average(rssi.toFloat())
-								.toInt()
-						value
+					list.map { entry ->
+						val value: Float = avg.average(entry.y)
+						Entry(entry.x, value)
 					}
 				}
 			}
@@ -76,12 +70,12 @@ class RecordsAnalyserViewModel(application: Application) : AndroidViewModel(appl
 
 		kalman = Transformations.switchMap(kalmanFilterParam) { params ->
 			Timber.d("New Kalman filter params $params")
-			val returnListData: LiveData<List<Int>> = Transformations.map(original) {
-				it?.let {
+			val returnListData: LiveData<List<Entry>> = Transformations.map(original) { nullableList ->
+				nullableList?.let { list ->
 					val avg = MotionlessAverage.Builder.createSimplifiedKalmanFilter(params?.r ?: 0.05f, params?.q ?: 1f)
-					it.map {
-						avg.average(it.toFloat())
-								.toInt()
+					list.map { entry ->
+						val value: Float = avg.average(entry.y)
+						Entry(entry.x, value)
 					}
 				}
 			}
@@ -134,4 +128,22 @@ class RecordsAnalyserViewModel(application: Application) : AndroidViewModel(appl
 		}
 	}
 
+	fun Random.nextFloat(min: Float, max: Float): Float {
+		return Random.nextDouble(min.toDouble(), max.toDouble())
+				.toFloat()
+	}
+
+	fun refreshTestData() {
+		if (USE_TEST_DATA) {
+			var lastRssi = Random.nextFloat(-100f, -10f)
+			var lastTime = 10f
+			val testData = mutableListOf<Entry>()
+			repeat(100) {
+				lastRssi += Random.nextFloat(-10f, 10f)
+				lastTime += Random.nextFloat(50f, 900f)
+				testData.add(Entry(lastTime, lastRssi))
+			}
+			(original as MutableLiveData).value = testData
+		}
+	}
 }

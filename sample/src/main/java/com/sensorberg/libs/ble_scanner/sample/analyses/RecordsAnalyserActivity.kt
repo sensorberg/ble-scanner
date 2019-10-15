@@ -14,11 +14,16 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
 import com.majorik.sparklinelibrary.SparkLineLayout
 import com.sensorberg.libs.ble_scanner.sample.R
 import kotlinx.android.synthetic.main.activity_analyser.*
@@ -33,16 +38,36 @@ class RecordsAnalyserActivity : AppCompatActivity() {
 		setContentView(R.layout.activity_analyser)
 
 		val toolbar: Toolbar = findViewById(R.id.toolbar)
-		val original: SparkLineLayout = findViewById(R.id.graphOriginal)
-		val constFilter: SparkLineLayout = findViewById(R.id.graphConstantFilter)
-		val kalman: SparkLineLayout = findViewById(R.id.graphKalman)
 
 		val model = ViewModelProviders.of(this)
 				.get(RecordsAnalyserViewModel::class.java)
 
-		model.original.observe(this, GraphObserver(original))
-		model.constFilter.observe(this, GraphObserver(constFilter))
-		model.kalman.observe(this, GraphObserver(kalman))
+		val chart = findViewById<LineChart>(R.id.chart)
+
+		var original: LineDataSet? = null
+		var filter: LineDataSet? = null
+		var kalman: LineDataSet? = null
+
+		fun updateChart() {
+			if (original == null || filter == null || kalman == null) {
+				return
+			}
+			chart.data = LineData(filter!!, kalman!!, original!!)
+			chart.invalidate()
+		}
+
+		model.original.observeChart(Color.RED, "Original") {
+			original = it
+			updateChart()
+		}
+		model.constFilter.observeChart(Color.BLUE, "Filter") {
+			filter = it
+			updateChart()
+		}
+		model.kalman.observeChart(Color.GREEN, "Kalman") {
+			kalman = it
+			updateChart()
+		}
 
 		model.options.observe(this, Observer {
 			recordingOptions.clear()
@@ -51,6 +76,7 @@ class RecordsAnalyserActivity : AppCompatActivity() {
 
 		model.selected.observe(this, Observer { toolbar.title = it?.text })
 
+		createMenu("Refresh") { model.refreshTestData() }
 		createMenu("Filter", ::popupFilter)
 		createMenu("Kalman", ::popupKalman)
 		createMenu("Batch", ::popupChooser)
@@ -100,6 +126,7 @@ class RecordsAnalyserActivity : AppCompatActivity() {
 		popupView(sliders)
 	}
 
+	@SuppressLint("SetTextI18n")
 	private fun popupKalman() {
 		val model = ViewModelProviders.of(this)
 				.get(RecordsAnalyserViewModel::class.java)
@@ -133,20 +160,9 @@ class RecordsAnalyserActivity : AppCompatActivity() {
 	private fun popupView(view: View) {
 		popup?.dismiss()
 		popup = PopupWindow(view, (toolbar.width.toFloat() * 0.7f).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
-		popup?.setBackgroundDrawable(ColorDrawable(Color.GRAY))
+		popup?.setBackgroundDrawable(ColorDrawable(Color.argb(160, 192, 192, 192)))
 		popup?.isOutsideTouchable = true
 		popup?.showAsDropDown(toolbar, 0, 0, GravityCompat.END)
-	}
-
-	private class GraphObserver(private val graph: SparkLineLayout) : Observer<List<Int>> {
-		override fun onChanged(t: List<Int>?) {
-			if (t != null) {
-				graph.setData(ArrayList(t))
-			} else {
-				graph.setData(ArrayList())
-			}
-			graph.invalidate()
-		}
 	}
 
 	inner class Adapter(options: List<RecordsAnalyserViewModel.RecordOptions>) : ListAdapter<RecordsAnalyserViewModel.RecordOptions, Holder>(
@@ -181,7 +197,7 @@ class RecordsAnalyserActivity : AppCompatActivity() {
 		}
 	}
 
-	internal fun SeekBar.setOnProgressChanged(listener: (seekbar: SeekBar, percent: Int, fromUser: Boolean) -> Unit) {
+	private fun SeekBar.setOnProgressChanged(listener: (seekbar: SeekBar, percent: Int, fromUser: Boolean) -> Unit) {
 		setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
 			override fun onProgressChanged(seekbar: SeekBar, percent: Int, fromUser: Boolean) {
 				listener.invoke(seekbar, percent, fromUser)
@@ -197,4 +213,19 @@ class RecordsAnalyserActivity : AppCompatActivity() {
 
 		})
 	}
+
+	private fun LiveData<List<Entry>>.observeChart(color: Int, label: String, update: (LineDataSet) -> Unit) {
+		observe(this@RecordsAnalyserActivity, Observer {
+			it?.let { entries ->
+				val set = LineDataSet(entries, label)
+				set.color = color
+				set.setDrawCircleHole(false)
+				set.setDrawCircles(false)
+				set.setCircleColor(color)
+				set.circleRadius = resources.displayMetrics.density * .5f
+				update.invoke(set)
+			}
+		})
+	}
+
 }

@@ -103,11 +103,8 @@ object Libs {
     const val observable_data: String = "com.sensorberg.libs:observable-data:" +
             Versions.observable_data
 
-    /**
-     * https://github.com/majorkik/SparkLineLayout
-     */
-    const val sparklinelayout: String = "com.github.majorkik:SparkLineLayout:" +
-            Versions.sparklinelayout
+    const val mpandroidchart: String = "com.github.PhilJay:MPAndroidChart:" +
+            Versions.mpandroidchart
 
     /**
      * https://developer.android.com/topic/libraries/architecture/index.html

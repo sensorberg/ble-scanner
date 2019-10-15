@@ -12,7 +12,7 @@ import org.gradle.plugin.use.PluginDependencySpec
  * YOU are responsible for updating manually the dependency version.
  */
 object Versions {
-    const val de_fayard_buildsrcversions_gradle_plugin: String = "0.6.4"
+    const val de_fayard_buildsrcversions_gradle_plugin: String = "0.6.4" // available: "0.7.0"
 
     const val com_android_tools_build_gradle: String = "3.5.1"
 
@@ -32,9 +32,9 @@ object Versions {
 
     const val observable_data: String = "1.3.4"
 
-    const val sparklinelayout: String = "1.0.1"
+    const val mpandroidchart: String = "v3.1.0" // available: "3.1.0"
 
-    const val androidx_room: String = "2.1.0"
+    const val androidx_room: String = "2.1.0" // available: "2.2.0"
 
     const val espresso_core: String = "3.2.0"
 
