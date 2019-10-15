@@ -16,6 +16,8 @@ object Versions {
 
     const val com_android_tools_build_gradle: String = "3.5.1"
 
+    const val gradle_maven_publish_plugin: String = "0.8.0"
+
     const val androidx_test_ext_junit: String = "1.1.1"
 
     const val org_jetbrains_kotlin: String = "1.3.50"

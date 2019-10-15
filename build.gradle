@@ -12,9 +12,8 @@ buildscript {
 		classpath(Libs.com_android_tools_build_gradle)
 		classpath(Libs.kotlin_gradle_plugin)
 		classpath(Libs.de_fayard_buildsrcversions_gradle_plugin)
+		classpath(Libs.gradle_maven_publish_plugin)
 	}
-
-
 }
 
 allprojects {

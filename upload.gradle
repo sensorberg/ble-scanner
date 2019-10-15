@@ -1,0 +1,12 @@
+apply plugin: "com.vanniktech.maven.publish"
+mavenPublish {
+	targets {
+		uploadArchives {
+			signing = false
+			releaseRepositoryUrl = findProperty("MAVEN_URL", null)
+			snapshotRepositoryUrl = findProperty("MAVEN_URL_SNAPSHOT", null)
+			repositoryUsername = findProperty("MAVEN_USERNAME", null)
+			repositoryPassword = findProperty("MAVEN_PASSWORD", null)
+		}
+	}
+}

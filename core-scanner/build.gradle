@@ -37,3 +37,5 @@ dependencies {
 	androidTestImplementation(Libs.androidx_test_ext_junit)
 	androidTestImplementation(Libs.espresso_core)
 }
+
+apply from: '../upload.gradle'

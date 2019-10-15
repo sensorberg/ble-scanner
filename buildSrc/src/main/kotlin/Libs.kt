@@ -18,6 +18,12 @@ object Libs {
             Versions.com_android_tools_build_gradle
 
     /**
+     * http://github.com/vanniktech/gradle-maven-publish-plugin/
+     */
+    const val gradle_maven_publish_plugin: String = "com.vanniktech:gradle-maven-publish-plugin:" +
+            Versions.gradle_maven_publish_plugin
+
+    /**
      * https://developer.android.com/testing
      */
     const val androidx_test_ext_junit: String = "androidx.test.ext:junit:" +
