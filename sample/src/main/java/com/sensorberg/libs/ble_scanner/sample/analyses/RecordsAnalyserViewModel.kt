@@ -16,8 +16,6 @@ import com.sensorberg.motionlessaverage.MotionlessAverage
 import timber.log.Timber
 import kotlin.random.Random
 
-private const val USE_TEST_DATA = false
-
 class RecordsAnalyserViewModel(application: Application) : AndroidViewModel(application) {
 
 	private val dao: ScanDao = scanDatabase.scanDao()
@@ -32,6 +30,8 @@ class RecordsAnalyserViewModel(application: Application) : AndroidViewModel(appl
 	val options: LiveData<List<RecordOptions>> = MutableLiveData()
 	val selected: LiveData<RecordOptions> = MutableLiveData()
 
+	val useTestData = false
+
 	init {
 		runOn(SINGLE) {
 			val data = dao.getBatchList()
@@ -42,7 +42,7 @@ class RecordsAnalyserViewModel(application: Application) : AndroidViewModel(appl
 			}
 		}
 
-		if (USE_TEST_DATA) {
+		if (useTestData) {
 			original = MutableLiveData()
 			refreshTestData()
 		} else {
@@ -134,7 +134,7 @@ class RecordsAnalyserViewModel(application: Application) : AndroidViewModel(appl
 	}
 
 	fun refreshTestData() {
-		if (USE_TEST_DATA) {
+		if (useTestData) {
 			var lastRssi = Random.nextFloat(-100f, -10f)
 			var lastTime = 10f
 			val testData = mutableListOf<Entry>()

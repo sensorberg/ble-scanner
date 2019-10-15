@@ -75,7 +75,9 @@ class RecordsAnalyserActivity : AppCompatActivity() {
 
 		model.selected.observe(this, Observer { toolbar.title = it?.text })
 
-		createMenu("Refresh") { model.refreshTestData() }
+		if (model.useTestData) {
+			createMenu("Refresh") { model.refreshTestData() }
+		}
 		createMenu("Filter", ::popupFilter)
 		createMenu("Kalman", ::popupKalman)
 		createMenu("Batch", ::popupChooser)
