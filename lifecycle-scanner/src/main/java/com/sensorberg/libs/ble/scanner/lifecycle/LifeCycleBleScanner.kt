@@ -7,7 +7,7 @@ import com.sensorberg.libs.ble.scanner.BleScanner
  * This methods simply calls [BleScanner.start] and [BleScanner.stopDelayed] according to the supplied lifecycle start/stop events.
  */
 fun BleScanner.scanWithLifecycle(lifecycleOwner: LifecycleOwner) {
-	val lifecycleObserver = StartedObserver(this)
+	val lifecycleObserver = StartedObserver(this, lifecycleOwner)
 	lifecycleOwner.lifecycle.addObserver(lifecycleObserver)
 }
 
@@ -15,7 +15,7 @@ fun BleScanner.scanWithProcessLifecycle() {
 	scanWithLifecycle(ProcessLifecycleOwner.get())
 }
 
-internal class StartedObserver(private val scanner: BleScanner) : LifecycleObserver {
+internal class StartedObserver(private val scanner: BleScanner, private val lifecycleOwner: LifecycleOwner) : LifecycleObserver {
 
 	@OnLifecycleEvent(Lifecycle.Event.ON_START) fun onStart() {
 		scanner.start()
@@ -23,5 +23,10 @@ internal class StartedObserver(private val scanner: BleScanner) : LifecycleObser
 
 	@OnLifecycleEvent(Lifecycle.Event.ON_STOP) fun onStop() {
 		scanner.stopDelayed()
+	}
+
+	@OnLifecycleEvent(Lifecycle.Event.ON_DESTROY) fun onDestroy() {
+		scanner.stopNow()
+		lifecycleOwner.lifecycle.removeObserver(this)
 	}
 }
