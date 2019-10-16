@@ -43,7 +43,8 @@ class BleScannerStateControllerTest {
 		tested.update(bluetoothEnabled = true,
 					  locationEnabled = true,
 					  locationPermission = true,
-					  scanRequest = SCAN)
+					  scanRequest = SCAN,
+					  bluetoothError = BleScannerStateController.NO_ERROR)
 	}
 
 	@Test fun `does scan when requested and all permissions passed`() {
@@ -56,7 +57,8 @@ class BleScannerStateControllerTest {
 		tested.update(bluetoothEnabled = true,
 					  locationEnabled = true,
 					  locationPermission = false,
-					  scanRequest = SCAN)
+					  scanRequest = SCAN,
+					  bluetoothError = BleScannerStateController.NO_ERROR)
 		assertEquals(BleScanner.State.IDLE(BleScanner.Reason.NO_LOCATION_PERMISSION), state)
 		verifyStartScan(0)
 	}
@@ -65,7 +67,8 @@ class BleScannerStateControllerTest {
 		tested.update(bluetoothEnabled = false,
 					  locationEnabled = true,
 					  locationPermission = true,
-					  scanRequest = SCAN)
+					  scanRequest = SCAN,
+					  bluetoothError = BleScannerStateController.NO_ERROR)
 		assertEquals(BleScanner.State.IDLE(BleScanner.Reason.BLUETOOTH_DISABLED), state)
 		verifyStartScan(0)
 	}
@@ -75,7 +78,8 @@ class BleScannerStateControllerTest {
 		tested.update(bluetoothEnabled = true,
 					  locationEnabled = true,
 					  locationPermission = true,
-					  scanRequest = STOP_NOW)
+					  scanRequest = STOP_NOW,
+					  bluetoothError = BleScannerStateController.NO_ERROR)
 		assertEquals(BleScanner.State.IDLE(BleScanner.Reason.NO_SCAN_REQUEST), state)
 		verifyStartScan(1)
 		verifyStopScan(1)
@@ -86,7 +90,8 @@ class BleScannerStateControllerTest {
 		tested.update(bluetoothEnabled = true,
 					  locationEnabled = true,
 					  locationPermission = true,
-					  scanRequest = STOP_DELAYED)
+					  scanRequest = STOP_DELAYED,
+					  bluetoothError = BleScannerStateController.NO_ERROR)
 		assertEquals(BleScanner.State.IDLE(BleScanner.Reason.NO_SCAN_REQUEST), state)
 		verifyStartScan(1)
 		verifyStopScan(1)
@@ -96,7 +101,8 @@ class BleScannerStateControllerTest {
 		tested.update(bluetoothEnabled = true,
 					  locationEnabled = false,
 					  locationPermission = true,
-					  scanRequest = SCAN)
+					  scanRequest = SCAN,
+					  bluetoothError = BleScannerStateController.NO_ERROR)
 		assertEquals(BleScanner.State.IDLE(BleScanner.Reason.LOCATION_DISABLED), state)
 		verifyStartScan(1)
 	}
@@ -105,9 +111,14 @@ class BleScannerStateControllerTest {
 		tested.update(bluetoothEnabled = true,
 					  locationEnabled = true,
 					  locationPermission = true,
-					  scanRequest = SCAN)
+					  scanRequest = SCAN,
+					  bluetoothError = BleScannerStateController.NO_ERROR)
 		verifyStartScan(1)
-		tested.setBluetoothError(42)
+		tested.update(bluetoothEnabled = true,
+					  locationEnabled = true,
+					  locationPermission = true,
+					  scanRequest = SCAN,
+					  bluetoothError = 42)
 		assertEquals(BleScanner.State.ERROR(42), state)
 		verifyStopScan(1)
 		verifyStartScan(2)
@@ -118,17 +129,20 @@ class BleScannerStateControllerTest {
 		tested.update(bluetoothEnabled = true,
 					  locationEnabled = true,
 					  locationPermission = true,
-					  scanRequest = SCAN)
+					  scanRequest = SCAN,
+					  bluetoothError = BleScannerStateController.NO_ERROR)
 		verifyStartScan(1)
 		tested.update(bluetoothEnabled = true,
 					  locationEnabled = false,
 					  locationPermission = true,
-					  scanRequest = SCAN)
+					  scanRequest = SCAN,
+					  bluetoothError = BleScannerStateController.NO_ERROR)
 		verifyStartScan(2)
 		tested.update(bluetoothEnabled = true,
 					  locationEnabled = true,
 					  locationPermission = true,
-					  scanRequest = SCAN)
+					  scanRequest = SCAN,
+					  bluetoothError = BleScannerStateController.NO_ERROR)
 		verifyStartScan(3)
 		verifyStopScan(0)
 	}
@@ -137,12 +151,14 @@ class BleScannerStateControllerTest {
 		tested.update(bluetoothEnabled = true,
 					  locationEnabled = false,
 					  locationPermission = false,
-					  scanRequest = SCAN)
+					  scanRequest = SCAN,
+					  bluetoothError = BleScannerStateController.NO_ERROR)
 		verifyStartScan(0)
 		tested.update(bluetoothEnabled = true,
 					  locationEnabled = false,
 					  locationPermission = true,
-					  scanRequest = SCAN)
+					  scanRequest = SCAN,
+					  bluetoothError = BleScannerStateController.NO_ERROR)
 		verifyStartScan(1)
 	}
 
@@ -152,7 +168,8 @@ class BleScannerStateControllerTest {
 		tested.update(bluetoothEnabled = true,
 					  locationEnabled = false,
 					  locationPermission = true,
-					  scanRequest = SCAN)
+					  scanRequest = SCAN,
+					  bluetoothError = BleScannerStateController.NO_ERROR)
 		verifyStopScan(0)
 	}
 
@@ -162,7 +179,8 @@ class BleScannerStateControllerTest {
 		tested.update(bluetoothEnabled = false,
 					  locationEnabled = true,
 					  locationPermission = true,
-					  scanRequest = SCAN)
+					  scanRequest = SCAN,
+					  bluetoothError = BleScannerStateController.NO_ERROR)
 		verifyStopScan(1)
 	}
 
@@ -172,7 +190,8 @@ class BleScannerStateControllerTest {
 		tested.update(bluetoothEnabled = true,
 					  locationEnabled = true,
 					  locationPermission = false,
-					  scanRequest = SCAN)
+					  scanRequest = SCAN,
+					  bluetoothError = BleScannerStateController.NO_ERROR)
 		verifyStopScan(1)
 	}
 }

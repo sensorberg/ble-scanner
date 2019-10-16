@@ -22,12 +22,14 @@ internal class BleScannerImpl(private val controller: BleScannerStateController,
 	private val callbacks = mutableListOf<ScanResultCallback>()
 	private val startStop = MutableObservableData<BleScannerStateController.ScanRequest>()
 	private val state = MutableObservableData<BleScanner.State>()
+	private val btError = MutableObservableData<Int>()
 
 	private val updater: Observer<Any> = {
 		controller.update(bluetoothEnabled.value ?: false,
 						  locationEnabled.value ?: false,
 						  locationPermission.value ?: false,
-						  startStop.value ?: BleScannerStateController.ScanRequest.STOP_NOW)
+						  startStop.value ?: BleScannerStateController.ScanRequest.STOP_NOW,
+						  btError.value ?: BleScannerStateController.NO_ERROR)
 	}
 
 	init {
@@ -37,6 +39,7 @@ internal class BleScannerImpl(private val controller: BleScannerStateController,
 		locationEnabled.observe(updater)
 		locationPermission.observe(updater)
 		startStop.observe(updater)
+		btError.observe(updater)
 		bluetoothEnabled.start()
 		locationEnabled.start()
 	}
@@ -83,7 +86,9 @@ internal class BleScannerImpl(private val controller: BleScannerStateController,
 				}
 
 				// if we're receiving scans, remove any error
-				controller.setBluetoothError(BleScannerStateController.NO_ERROR)
+				if (btError.value != BleScannerStateController.NO_ERROR) {
+					btError.value = BleScannerStateController.NO_ERROR
+				}
 
 				// only report if the application believes we're scanning
 				if (state.value == BleScanner.State.SCANNING) {
@@ -92,7 +97,7 @@ internal class BleScannerImpl(private val controller: BleScannerStateController,
 			}
 
 			override fun onScanFailed(errorCode: Int) {
-				controller.setBluetoothError(errorCode)
+				btError.value = errorCode
 			}
 		}
 	}
