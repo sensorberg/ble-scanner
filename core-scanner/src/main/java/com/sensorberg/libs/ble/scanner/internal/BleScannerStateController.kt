@@ -18,29 +18,15 @@ internal class BleScannerStateController(
 	private var currentState: BleScanner.State = BleScanner.State.IDLE(BleScanner.Reason.NO_SCAN_REQUEST)
 	private var onStateChangedListener: ((BleScanner.State) -> Unit)? = null
 
-	internal fun update(bluetoothEnabled: Boolean,
-						locationEnabled: Boolean,
-						locationPermission: Boolean,
-						scanRequest: ScanRequest) {
-		privateUpdate(bluetoothEnabled, locationEnabled, locationPermission, scanRequest, lastBluetoothError)
-	}
-
 	internal fun onStateChanged(listener: (BleScanner.State) -> Unit) {
 		onStateChangedListener = listener
 	}
 
-	internal fun setBluetoothError(errorCode: Int) {
-		if (errorCode == lastBluetoothError) {
-			return
-		}
-		privateUpdate(lastBluetoothEnabled, lastLocationEnabled, lastLocationPermission, lastScanRequested, errorCode)
-	}
-
-	private fun privateUpdate(bluetoothEnabled: Boolean?,
-							  locationEnabled: Boolean?,
-							  locationPermission: Boolean?,
-							  scanRequest: ScanRequest?,
-							  bluetoothError: Int) {
+	internal fun update(bluetoothEnabled: Boolean?,
+						locationEnabled: Boolean?,
+						locationPermission: Boolean?,
+						scanRequest: ScanRequest?,
+						bluetoothError: Int) {
 
 		if (didNotChange(bluetoothEnabled, locationEnabled, locationPermission, bluetoothError, scanRequest)) {
 			return
@@ -88,10 +74,10 @@ internal class BleScannerStateController(
 							 bluetoothError: Int,
 							 scanRequest: ScanRequest?): Boolean {
 
-		val didNotChange = lastBluetoothEnabled == bluetoothEnabled
+		val didNotChange = lastBluetoothError == bluetoothError
+						   && lastBluetoothEnabled == bluetoothEnabled
 						   && lastLocationEnabled == locationEnabled
 						   && lastLocationPermission == locationPermission
-						   && lastBluetoothError == bluetoothError
 						   && lastScanRequested == scanRequest
 
 		if (!didNotChange) {
