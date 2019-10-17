@@ -2,7 +2,6 @@ package com.sensorberg.libs.ble.scanner.extensions
 
 import android.os.Handler
 import android.os.HandlerThread
-import android.os.SystemClock
 import com.sensorberg.libs.ble.scanner.BleScanner
 import com.sensorberg.libs.ble.scanner.ScanResultCallback
 import com.sensorberg.libs.ble.scanner.extensions.ObservableBleScanResult.Builder
@@ -154,15 +153,14 @@ class ObservableBleScanResult private constructor(private val timeoutInMs: Long,
 			}
 
 			handler.removeCallbacks(removeOldRunnable)
-			scanResult.timestampNanos
-			SystemClock.elapsedRealtime()
+
 			val floatRssi = scanResult.rssi.toFloat()
 			val key = key(scanResult)
 			synchronized(devices) {
-				val averager = devices[key]?.averager ?: averagerFactory?.invoke()
+				val averager = devices[key]?.averager ?: averagerFactory?.invoke(scanResult)
 				val averageRssi = averager?.average(floatRssi)
-				val resultExtras = BleScanResult(scanResult, averageRssi ?: floatRssi)
-				val internalData = BleScanResultContainer(resultExtras, averager)
+				val bleScanResult = BleScanResult(scanResult, averageRssi ?: floatRssi)
+				val internalData = BleScanResultContainer(bleScanResult, averager)
 				devices[key] = internalData
 			}
 			dropDevices(timeoutInMs)
@@ -341,4 +339,4 @@ class ObservableBleScanResult private constructor(private val timeoutInMs: Long,
 										 val averager: MotionlessAverage?)
 }
 
-typealias AveragerFactory = () -> MotionlessAverage?
+typealias AveragerFactory = (ScanResult) -> MotionlessAverage?

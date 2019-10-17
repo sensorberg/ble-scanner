@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.DiffUtil
+import com.sensorberg.libs.ble.scanner.extensions.AveragerFactory
 import com.sensorberg.libs.ble.scanner.extensions.ObservableBleScanResult
 import com.sensorberg.libs.ble_scanner.sample.backgroundHandler
 import com.sensorberg.libs.ble_scanner.sample.bleScanner
@@ -14,7 +15,7 @@ import com.sensorberg.observable.Transformations
 private const val SEVEN_SECONDS = 7_003L
 private const val TWELVE_SECONDS = 12_002L
 private const val ONE_SECOND = 1_001L
-private val averagerFactory = { MotionlessAverage.Builder.createConstantFilterAverage(10f) }
+private val averagerFactory: AveragerFactory = { MotionlessAverage.Builder.createConstantFilterAverage(10f) }
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
