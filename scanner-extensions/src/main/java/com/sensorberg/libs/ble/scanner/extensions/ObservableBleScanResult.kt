@@ -215,7 +215,7 @@ class ObservableBleScanResult private constructor(private val timeoutInMs: Long,
 		}
 
 		private fun now(): Long {
-			return SystemClock.elapsedRealtime()
+			return Time.getElapsedTime()
 		}
 
 		private fun nanoToMillis(nanos: Long): Long {
