@@ -65,8 +65,23 @@ class ObservableBleScanResult private constructor(private val timeoutInMs: Long,
 		removeOldDelayed()
 	}
 
+	private fun sizeChanged(): Boolean {
+		val devicesSize = size()
+		val listSize = value?.size
+		return if (devicesSize == 0 && listSize == null) {
+			// special condition,
+			// if size is zero and list is null,
+			// that means scans were never received
+			false
+		} else {
+			// changed if value and size() are not matching
+			(devicesSize != listSize)
+		}
+	}
+
 	override fun onActive() {
-		if (dropDevices(onActiveTimeoutInMs)) {
+		if (dropDevices(onActiveTimeoutInMs)
+			|| sizeChanged()) {
 			postDevicesNow()
 		}
 	}
@@ -105,7 +120,7 @@ class ObservableBleScanResult private constructor(private val timeoutInMs: Long,
 		}
 
 		val sorted = unsorted.sortedBy { -it.averageRssi }
-		Timber.d("$TAG. Posting ${sorted.size} scan results")
+		Timber.v("$TAG. Posting ${sorted.size} scan results")
 		value = sorted
 	}
 
@@ -326,6 +341,7 @@ class ObservableBleScanResult private constructor(private val timeoutInMs: Long,
 			cancellation?.onCancelled {
 				bleScanner.removeCallback(result.onScanResults)
 				state.removeObserver(result.onBleScannerStatus)
+				result.value = null
 			}
 			return result
 		}

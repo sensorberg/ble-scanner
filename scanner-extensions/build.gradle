@@ -38,6 +38,7 @@ dependencies {
 	testImplementation(Libs.junit_junit)
 	testImplementation(Libs.mockk)
 	testImplementation(Libs.executioner_testing)
+	testImplementation(Libs.time_test)
 
 	androidTestImplementation(Libs.androidx_test_ext_junit)
 	androidTestImplementation(Libs.espresso_core)
