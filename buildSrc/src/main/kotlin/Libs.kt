@@ -160,6 +160,11 @@ object Libs {
     const val appcompat: String = "androidx.appcompat:appcompat:" + Versions.appcompat
 
     /**
+     * https://git.sensorberg.io/android/time
+     */
+    const val time_test: String = "com.sensorberg.libs:time-test:" + Versions.time_test
+
+    /**
      * http://developer.android.com/tools/extras/support-library.html
      */
     const val core_ktx: String = "androidx.core:core-ktx:" + Versions.core_ktx

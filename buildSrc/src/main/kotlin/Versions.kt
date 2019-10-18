@@ -52,6 +52,8 @@ object Versions {
 
     const val appcompat: String = "1.1.0"
 
+    const val time_test: String = "1.0.3"
+
     const val core_ktx: String = "1.1.0"
 
     const val material: String = "1.0.0"
@@ -71,7 +73,7 @@ object Versions {
      * See issue 19: How to update Gradle itself?
      * https://github.com/jmfayard/buildSrcVersions/issues/19
      */
-    const val gradleLatestVersion: String = "5.6.2"
+    const val gradleLatestVersion: String = "5.6.3"
 }
 
 /**
