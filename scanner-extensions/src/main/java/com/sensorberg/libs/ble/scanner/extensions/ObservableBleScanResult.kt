@@ -80,8 +80,7 @@ class ObservableBleScanResult private constructor(private val timeoutInMs: Long,
 	}
 
 	override fun onActive() {
-		if (dropDevices(onActiveTimeoutInMs)
-			|| sizeChanged()) {
+		if (dropDevices(onActiveTimeoutInMs) || sizeChanged()) {
 			postDevicesNow()
 		}
 	}
