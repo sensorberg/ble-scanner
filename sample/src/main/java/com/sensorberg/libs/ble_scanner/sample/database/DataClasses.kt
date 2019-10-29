@@ -10,6 +10,7 @@ data class StoredScanBactch(
 
 @Entity(tableName = "scans")
 data class StoredScanData(
-	@PrimaryKey val timestamp: Long,
+	@PrimaryKey(autoGenerate = true) val id: Long,
+	val timestamp: Long,
 	val batchId: Long,
 	val rssi: Int)

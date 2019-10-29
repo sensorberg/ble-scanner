@@ -24,7 +24,7 @@ class RecordsAnalyserViewModel(application: Application) : AndroidViewModel(appl
 	val constFilter: LiveData<List<Entry>>
 	val kalman: LiveData<List<Entry>>
 
-	private val constFilterParam = MutableLiveData<Float>().apply { value = 1f }
+	private val constFilterParam = MutableLiveData<Float>().apply { value = 3f }
 	private val kalmanFilterParam = MutableLiveData<KalmanParam>().apply { value = KalmanParam(0.05f, 1f) }
 
 	val options: LiveData<List<RecordOptions>> = MutableLiveData()
