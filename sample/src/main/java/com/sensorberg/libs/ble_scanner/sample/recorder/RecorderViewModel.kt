@@ -29,6 +29,7 @@ class RecorderViewModel(application: Application) : AndroidViewModel(application
 	private val dao: ScanDao = scanDatabase.scanDao()
 	private lateinit var title: String
 	private lateinit var address: String
+	private var recordStartTime: Long = 0
 	private val batchId = MutableLiveData<Long>()
 	private val recordedScans: LiveData<List<StoredScanData>> = Transformations.switchMap(batchId) {
 		return@switchMap if (it != null) {
@@ -42,8 +43,9 @@ class RecorderViewModel(application: Application) : AndroidViewModel(application
 		val data = mutableListOf<UiData>()
 		data.add(UiData(title, 0))
 		data.add(UiData(address, 1))
-		data.add(UiData("Recorded ${list.size} items", 2))
-		data.add(UiData("Current average is ${averageRssi}dB", 3))
+		data.add(UiData("Recording for ${(recordStartTime.toFloat() - SystemClock.elapsedRealtime().toFloat()) / 1000f} seconds", 3))
+		data.add(UiData("Recorded ${list.size} items", 4))
+		data.add(UiData("Current average is ${averageRssi}dB", 5))
 		return@map data
 	}
 
@@ -58,6 +60,7 @@ class RecorderViewModel(application: Application) : AndroidViewModel(application
 			val newId = dao.newBatch(StoredScanBactch(0, title))
 			batchId.postValue(newId)
 			Timber.d("Starting record of batch $title. Batch ID = $newId")
+			recordStartTime = SystemClock.elapsedRealtime()
 			bleScanner.addCallback(scanResultCallback)
 		}
 	}
@@ -84,7 +87,7 @@ class RecorderViewModel(application: Application) : AndroidViewModel(application
 
 			runOn(POOL) {
 				Timber.v("Adding scan data to ${scanResult.rssi}")
-				dao.newScan(StoredScanData(timestamp - initialTimeStamp.get(), batchId, scanResult.rssi))
+				dao.newScan(StoredScanData(0, timestamp - initialTimeStamp.get(), batchId, scanResult.rssi))
 			}
 		}
 	}
