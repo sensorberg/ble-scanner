@@ -62,7 +62,7 @@ object Libs {
             Versions.org_jetbrains_kotlin
 
     /**
-     * https://git.sensorberg.io/android/executioner
+     * https://github.com/sensorberg-dev/executioner
      */
     const val executioner_testing: String = "com.sensorberg.libs:executioner-testing:" +
             Versions.executioner_testing
@@ -104,7 +104,7 @@ object Libs {
             Versions.permission_bitte
 
     /**
-     * https://git.sensorberg.io/android/observable-data
+     * https://github.com/sensorberg-dev/observable-data
      */
     const val observable_data: String = "com.sensorberg.libs:observable-data:" +
             Versions.observable_data
@@ -134,7 +134,7 @@ object Libs {
     const val recyclerview: String = "androidx.recyclerview:recyclerview:" + Versions.recyclerview
 
     /**
-     * https://git.sensorberg.io/android/executioner
+     * https://github.com/sensorberg-dev/executioner
      */
     const val executioner: String = "com.sensorberg.libs:executioner:" + Versions.executioner
 
