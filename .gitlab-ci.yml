@@ -40,4 +40,4 @@ deploy_release:
   only:
     - tags
   script:
-    - ./gradlew clean testDebugUnitTest lintDebug assembleDebug uploadArchives
+    - ./gradlew clean testReleaseUnitTest lintRelease assembleRelease uploadArchives
